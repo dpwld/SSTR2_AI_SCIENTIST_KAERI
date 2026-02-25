@@ -1,0 +1,33 @@
+[SSTR2 AI-Scientist 통합 시스템]
+[Role & Mission] 너는 최고 수준의 AI 신약 개발자이자 MLOps 엔지니어이며, 특히 LangGraph와 Streamlit을 활용한 자율형 에이전트 시스템 구축 전문가야. 우리의 목표는 SSTR2 표적 방사성의약품(PRRT) 발굴을 위해 3대 지표(100배 결합, 72시간 체류, 신장 독성 20% 개선)를 검증하는 통합 파이프라인과 실시간 모니터링 시스템을 구축하는 것이야.
+
+[Context & Existing Files] 만약 현재 폴더에 기존 코드(00_peptide_gen.py ~ 03_ai_boardroom.py)가 있다면 이를 분석하여 데이터 흐름을 연결하고, 없다면 아래 요구사항에 맞춰 전체 시스템을 구현해 줘.
+
+[System Requirements]
+1. Phase 1 & 2 Core Logic:
+- Module 00~01: 1억 개 서열 생성 및 초고속 PK 필터링 (Net Charge +1 초과 시 탈락).
+- Module 02: ESM-2 임베딩 + XGBoost 대리 모델 학습 및 상위 100개 추출.
+- Module 03: Ollama(llama3) 백엔드 기반 5인 에이전트(Planner, Builder, QC, PK, Planner) LangGraph 협업 시스템.
+2. Tmux Mission Control (launch_mission.sh):
+- 윈도우 Git Bash 환경에서 실행 가능한 Tmux 자동화 스크립트 작성.
+- 터미널을 분할하여 Pane 1(메인 로직 실행), Pane 2(에이전트 실시간 로그 tailing), Pane 3(시스템 리소스 모니터링) 환경을 자동 구축할 것.
+3. Streamlit Dashbaord (dashboard.py):
+- Visual Layout: 제공된 대시보드 이미지의 UI/UX를 그대로 재현할 것.
+- Top: Iteration 및 Step별 프로세스 바 (완료/진행/대기 색상 구분).
+- Sidebar: Agent Monitor 섹션. 에이전트별 상태와 최신 대화 내용을 실시간 스트리밍.
+- Main: Candidate Ranking 테이블. 3대 성공 지표 달성 여부를 O/X로 표시하고 필터링(All/Pass/Fail) 기능 포함.
+4. Academic Reporting (04_validate_and_analyze.py):
+- 분석 종료 시 figures/ 폴더를 자동 생성하고, 학술지 투고용 고해상도(300DPI) 통계 그래프(선택성 Heatmap, 상관관계 Scatter, Score Distribution)를 자동 저장.
+- 필수 시각화 리스트:
+- Target Specificity Heatmap (지표 ① 증빙): SSTR2와 기타 아형(SSTR1, 3, 4, 5) 간의 결합 에너지를 비교하여, '100배 이상의 선택성'을 시각적으로 입증하는 히트맵. (Z-score 정규화 포함)
+- Residence Time vs. Binding Affinity Scatter (지표 ② 증빙): 결합력(Affinity)과 체류 시간(72h 기준)의 상관관계를 산점도로 나타내고, 우측 상단에 '위닝 펩타이드' 영역을 별도 강조할 것.
+- Kidney Dose Reduction Analysis (지표 ③ 증빙): 대조군(DOTATATE) 대비 설계된 후보물질들의 Net Charge 및 예측된 신장 축적률(Kidney Uptake Ratio)을 비교하는 바 차트(Error bar 포함). '20% 개선' 지점을 Threshold 라인으로 표시.
+- Sequence-Activity Relationship (SAR) Logo: 선정된 상위 후보군에서 공통적으로 나타나는 아미노산 서열 패턴을 Logo Plot으로 시각화하여 구조적 안정성 근거 제시.
+- 학술지용 요약 표(Table) 자동 생성:
+Top_5_Candidates_Summary.csv: Sequence, Kd(pM), Residence Time(h), Net Charge, 예상 신장 피폭 저감률(%)을 포함한 표. 모든 표와 그래프의 범례(Legend)와 축(Axis) 라벨은 학술 용어(영문)를 사용하고 한글 주석으로 설명을 달 것.
+
+5. Environment Setup:
+- requirements.txt에 streamlit, rich, langgraph, peptides, xgboost, plotly, seaborn 등을 포함.
+- README.md에 Ollama 설치, 모델 다운로드, Conda 환경 세팅, bash launch_mission.sh 실행법을 상세히 기술할 것.
+
+[Final Instruction] 모든 코드는 모듈화되어야 하며, 각 기능의 생물학적/공학적 근거를 한글 주석으로 상세히 설명해 줘. 자, 이제 이 'AI-Scientist 관제 센터'를 완성해 줘!"

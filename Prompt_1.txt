@@ -1,0 +1,31 @@
+[전반전: 1억 개 생성 및 초고속 필터링]
+[Role & Context] 너는 최고 수준의 MLOps 엔지니어이자 AI 신약 개발 전문가야. 우리는 현재 암세포의 **SSTR2(Somatostatin Receptor 2)**를 타겟으로 하는 차세대 방사성의약품(PRRT)을 설계하는 'AI Scientist' 시스템을 구축하고 있어.
+
+[Project Goal & 3 Metrics] 우리의 최종 목표는 아래 3대 성공 지표를 만족하는 '위닝 펩타이드'를 찾는 것이며, 너는 그 첫 단계인 **전반전(Phase 1: 초고속 깔때기 파이프라인)**을 구축해야 해.
+1. 정밀타격: 정상 세포 대비 SSTR2 표적에 100배 이상 강력 결합.
+2. 생존력: 암세포 표적 결합 후 최소 72시간 체류 유지 (Target Residence Time).
+3. 안전성: 대조군(Dotatate) 대비 신장 방사선 피폭량을 최소 20% 이상 개선.
+
+[Task: Phase 1 Pipeline Construction] 1억 개(100M) 스케일로 확장 가능한 '서열 생성' 및 '초고속 PK 필터' 시스템을 Python으로 작성해 줘. 이번 코드는 테스트용으로 1만 개(10,000개)를 처리하도록 세팅하되, 모든 로직은 병렬 처리와 메모리 효율을 극대화해야 해.
+Module 00. 00_peptide_gen.py (초거대 서열 생성기)
+- Constraints (필수 준수):
+1. 길이: 8~14개 아미노산 사이에서 무작위 결정 (Truncation 전략).
+2. 구조 고정(Lock): 반드시 2개의 C(Cysteine)가 이황화 결합 고리를 형성해야 하며, 그 고리 내부에 F-W-K-T 모티프가 온전하게 포함되어야 함.
+3. 효소 저항성: F-W-K-T 내부의 K는 유지하되, 그 외 모든 가변 영역에는 K(Lysine)와 R(Arginine)이 포함되지 않도록 아미노산 풀(Pool)에서 제외할 것.
+- Output: SSTR2_Raw_Library.csv (Columns: Sequence, Length)
+Module 01. 01_fast_pk_filter.py (신장 독성 및 물리화학 필터)
+- 기능: 텍스트 서열만으로 물리화학적 특성을 0.001초 만에 계산하여 '신장 독성(안전성 ③)' 위험군을 제거.
+- Filter Logic:
+1. peptides 라이브러리를 사용하여 Net Charge, pI, Hydrophobicity 계산.
+2. 신장 독성 차단: Net Charge가 +1을 초과하는 서열은 즉시 탈락(Drop). (양전하가 높으면 신장 피폭 위험 증가)
+3. 성공 지표 ③ 달성을 위해 대조군(Dotatate)의 특성값을 Baseline으로 삼아 필터링할 것.
+- Output: SSTR2_Filtered_10K.csv (필터를 통과한 최정예 후보)
+
+[Technical Requirements & Environment]
+1. Flexible Model Config: config.py 또는 .env 파일을 통해 Ollama 모델명(기본값: llama3)을 자유롭게 바꿀 수 있도록 환경 변수 설정을 적용할 것.
+2. Scalability: 1억 개 처리 시 메모리가 터지지 않도록 pandas의 chunking이나 multiprocessing을 활용한 고성능 코드로 작성할 것.
+3. Documentation (README.md): > * 프로젝트 목적 및 3대 성공 지표 설명.
+- 환경 구축 가이드: Ollama 설치법, 모델 다운로드(ollama run llama3), conda 환경 생성 및 pip install -r requirements.txt 명령어 포함.
+- 실행 순서 및 각 모듈별 상세 설명.
+
+[Instructions] 위 모든 내용을 포함하여 바로 실행 가능한 수준의 프로페셔널한 Python 프로젝트 구조를 생성해 줘. 모든 코드에는 생물학적 의미를 담은 한글 주석을 상세히 달아 줄 것.
