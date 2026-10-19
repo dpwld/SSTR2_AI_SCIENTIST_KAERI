@@ -114,7 +114,7 @@ SSTR2(소마토스타틴 수용체 2형)는 신경내분비종양(NET) 세포 �
 ## Project Structure
 
 ```
-SSTR2_AI_SCIENTIST/
+SSTR2_AI_SCIENTIST_KAERI/
 │
 ├── config.py                  # Central configuration (all parameters)
 ├── 00_peptide_gen.py          # Module 00: Combinatorial peptide generation
@@ -128,6 +128,9 @@ SSTR2_AI_SCIENTIST/
 ├── setup_env.bat              # Windows launcher for setup_env.py
 ├── run_pipeline.py            # Sequential pipeline runner (--test-mode)
 ├── run_pipeline.bat           # Windows launcher for run_pipeline.py
+├── run_all.bat                # Production setup + run (resets output/)
+├── simulate_pipeline.py       # Standalone synthetic demo + Module 04
+├── verify_syntax.py           # Offline syntax check for every root Python file
 ├── launch_mission.sh          # Tmux 3-pane launcher (Linux/Mac)
 ├── requirements.txt           # Python dependencies (complete)
 │
@@ -139,9 +142,7 @@ SSTR2_AI_SCIENTIST/
 │   ├── Final_Winning_Peptides_Report.md   # Module 03 final report
 │   ├── Top_5_Candidates_Summary.csv       # Module 04 top-5 with K_d
 │   ├── Validation_Report.md               # Module 04 validation report
-│   └── figures/                           # 13 figures + tables (PNG + PDF)
-│
-└── Prompt_1~5.txt             # Design specification documents
+│   └── figures/                           # Tracked PNGs; generated PDFs ignored
 ```
 
 ---
@@ -205,6 +206,22 @@ ollama serve                    # Start server (keep running)
 
 ## Quick Start
 
+### Offline source check
+
+```bash
+python verify_syntax.py
+python run_pipeline.py --help
+```
+
+The syntax check covers every Python file in the repository root, works from any
+working directory, and does not import research modules, download models, call
+Ollama, or overwrite the committed `output/` examples. It does not validate
+installed dependencies or scientific results.
+
+The numbered `00_`–`04_` scripts remain the pipeline entry points. Helper and
+launcher scripts stay at the root because they reference these filenames.
+
+
 ### Test Mode (No external docking engine required)
 
 ```bash
@@ -218,6 +235,12 @@ ollama serve
 # Run entire pipeline
 python run_pipeline.py --test-mode
 ```
+
+`--test-mode` replaces docking with dummy scores; Module 02 can still load or
+download embedding models, and Module 03 still needs Ollama. The separate
+`simulate_pipeline.py` creates synthetic outputs and runs Module 04. Both runners
+write to `output/`, so use a separate checkout to keep the committed example
+results intact. `run_all.bat` explicitly deletes and recreates `output/`.
 
 ### Pipeline Runner Options
 
