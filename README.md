@@ -6,6 +6,17 @@
 > 대규모 생성 → 물리화학적 필터링 → AI 대리 모델 도킹 → 다중 에이전트 합의 심사까지
 > 엔드투엔드로 수행하는 자동화 파이프라인
 
+## 공개 코드 요약
+
+펩타이드 후보 탐색 과정을 생성·필터링·점수화·에이전트 검토·리포트 단계로 연결한 연구용 파이프라인입니다.
+
+- **모델 단계**: PeptiVerse → ESM-2 → 수동 특징의 임베딩 대체 경로와 XGBoost 대리 모델을 사용합니다.
+- **에이전트 단계**: Evidence Curator, Structure Analyst, PK Expert, Design Generator, Experiment Planner의 검토 흐름을 구현합니다.
+- **운영 도구**: 단계별 실행 스크립트, 설정 파일, Streamlit 대시보드와 결과 리포트를 제공합니다.
+- **결과 해석**: 아래 Test Mode 결과는 모의 도킹 점수로 파이프라인 동작을 확인한 예시입니다. 실험으로 측정한 결합력, 체내 체류 시간 또는 신장 안전성의 검증 결과가 아닙니다.
+
+[포트폴리오](https://dpwld.github.io/#projects) · [실행 방법](#quick-start) · [검증 범위](#validation--limitations)
+
 ---
 
 ## Table of Contents
@@ -328,6 +339,8 @@ Evidence Curator → Structure Analyst → [PASS] → PK Expert → [PASS] → E
 
 ## Results Summary
 
+> **Test Mode 예시 결과**: 이 절의 후보 점수, 기준 통과율, 기준 물질 비교는 모의 데이터에 기반합니다. 실제 도킹·실험으로 확인한 성능 향상이나 약물 효능을 뜻하지 않습니다.
+
 ### Pipeline Performance (Test Mode: 10K)
 
 | Stage | Input | Output | Time |
@@ -348,7 +361,7 @@ Evidence Curator → Structure Analyst → [PASS] → PK Expert → [PASS] → E
 | 4 | `CDFWKTPC` | -8.305 | 1,403.9 | 360.8x | -0.290 |
 | 5 | `CFWKTPEC` | -8.056 | 2,102.8 | 499.6x | -0.290 |
 
-### Success Criteria Achievement (Top 100)
+### Test Mode Threshold Checks (Top 100)
 
 | Criterion | Threshold | Pass Rate |
 |-----------|-----------|-----------|
@@ -356,10 +369,10 @@ Evidence Curator → Structure Analyst → [PASS] → PK Expert → [PASS] → E
 | 72h Retention | <= -7.0 kcal/mol | **83/100 (83.0%)** |
 | Kidney Safety | <= +0.707 charge | **100/100 (100.0%)** |
 
-### vs Dotatate Improvement
+### Test Mode Comparison with Dotatate
 
-- **Net Charge**: average -0.290 vs Dotatate +0.707 → **140% improvement**
-- **Selectivity**: average ~800x vs Dotatate ~50x → **16x improvement**
+- **Net Charge**: average -0.290 vs Dotatate +0.707 → 테스트 모드의 전하 지표 차이
+- **Selectivity**: average ~800x vs Dotatate ~50x → 테스트 모드의 점수 비율 약 16배
 - **All candidates**: 0 protease cleavage sites (Dotatate has multiple)
 
 ---
